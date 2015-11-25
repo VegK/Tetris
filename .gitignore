@@ -45,3 +45,11 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+Thumbs.db.meta
+/*/*
+/Source/*
+/Source/Assets/UnityVS
+/Source/Assets/UnityVS.meta
+!/Source/Assets
+!/Source/ProjectSettings
