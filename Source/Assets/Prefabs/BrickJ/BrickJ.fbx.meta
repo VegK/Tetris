@@ -1,15 +1,32 @@
 fileFormatVersion: 2
 guid: 28bdb3daeea21d14eb058a57cd6ea241
-timeCreated: 1448452167
+timeCreated: 1448621139
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: "\u041E\u0431\u044A\u0435\u043A\u0442_\u041A\u0443\u0431_4"
+    100000: Box1
+    100002: Box2
+    100004: Box3
+    100006: Box4
+    100008: //RootNode
+    400000: Box1
+    400002: Box2
+    400004: Box3
+    400006: Box4
+    400008: //RootNode
+    2300000: Box1
+    2300002: Box2
+    2300004: Box3
+    2300006: Box4
+    3300000: Box1
+    3300002: Box2
+    3300004: Box3
+    3300006: Box4
+    4300000: Box1
+    4300002: Box2
+    4300004: Box3
+    4300006: Box4
   materials:
     importMaterials: 1
     materialName: 0
@@ -33,7 +50,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: .5
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -52,7 +69,7 @@ ModelImporter:
     normalSmoothAngle: 60
     splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 0
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
