@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Linq;
 
 public class BrickController : MonoBehaviour
 {
@@ -10,6 +10,8 @@ public class BrickController : MonoBehaviour
 	public float SpeedFall { get; set; }
 	#endregion
 	#region Private
+	private GameObject _lastLeftBox;
+	private GameObject _lastRightBox;
 	private float _speedUpFall = 1;
 	#endregion
 	#endregion
@@ -45,6 +47,9 @@ public class BrickController : MonoBehaviour
 
 	public void MoveLeft()
 	{
+		if (ExitBeyondField(-1))
+			return;
+
 		var pos = transform.localPosition;
 		pos.x -= 1;
 		transform.localPosition = pos;
@@ -52,6 +57,9 @@ public class BrickController : MonoBehaviour
 
 	public void MoveRight()
 	{
+		if (ExitBeyondField(1))
+			return;
+
 		var pos = transform.localPosition;
 		pos.x += 1;
 		transform.localPosition = pos;
@@ -63,6 +71,13 @@ public class BrickController : MonoBehaviour
 	}
 	#endregion
 	#region Private
+	private void Awake()
+	{
+		var boxes = GetBoxes();
+		_lastLeftBox = boxes.Aggregate((a, b) => a.transform.localPosition.x < b.transform.localPosition.x ? a : b);
+		_lastRightBox = boxes.Aggregate((a, b) => a.transform.localPosition.x > b.transform.localPosition.x ? a : b);
+	}
+
 	private void Start()
 	{
 
@@ -79,6 +94,13 @@ public class BrickController : MonoBehaviour
 		speed.y *= SpeedFall * _speedUpFall * Time.deltaTime;
 		transform.Translate(speed);
 		_speedUpFall = 1;
+	}
+
+	private bool ExitBeyondField(int diff)
+	{
+		var res = (_lastRightBox.transform.position.x + diff >= FieldController.Instance.Size.x);
+		res |= (_lastLeftBox.transform.position.x + diff < 0);
+		return res;
 	}
 	#endregion
 	#endregion
