@@ -7,7 +7,7 @@ public class Control : MonoBehaviour
 {
 	#region Properties
 	#region Public
-
+	public float HorizontalDelta = 1f;
 	#endregion
 	#region Private
 	private float _timePressKey;
@@ -33,7 +33,7 @@ public class Control : MonoBehaviour
 	{
 		if (Input.GetKey(KeyCode.LeftArrow))
 		{
-			if (Time.time - _timePressKey >= 0.2f)
+			if (Time.time - _timePressKey >= 0.2f * HorizontalDelta)
 			{
 				FieldController.Instance.CurrentBrick.MoveLeft();
 				_timePressKey = Time.time;
@@ -41,7 +41,7 @@ public class Control : MonoBehaviour
 		}
 		else if (Input.GetKey(KeyCode.RightArrow))
 		{
-			if (Time.time - _timePressKey >= 0.2f)
+			if (Time.time - _timePressKey >= 0.2f * HorizontalDelta)
 			{
 				FieldController.Instance.CurrentBrick.MoveRight();
 				_timePressKey = Time.time;
