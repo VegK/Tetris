@@ -10,6 +10,7 @@ public class BrickController : MonoBehaviour
 	public float SpeedFall { get; set; }
 	#endregion
 	#region Private
+	private GameObject[] _bufferBoxes;
 	private GameObject _lastLeftBox;
 	private GameObject _lastRightBox;
 	private float _speedUpFall = 1;
@@ -36,13 +37,16 @@ public class BrickController : MonoBehaviour
 
 	public GameObject[] GetBoxes()
 	{
+		if (_bufferBoxes != null)
+			return _bufferBoxes;
+
 		var count = transform.childCount;
-		var res = new GameObject[count];
 
+		_bufferBoxes = new GameObject[count];
 		for (int i = 0; i < count; i++)
-			res[i] = transform.GetChild(i).gameObject;
+			_bufferBoxes[i] = transform.GetChild(i).gameObject;
 
-		return res;
+		return _bufferBoxes;
 	}
 
 	public void MoveLeft()
