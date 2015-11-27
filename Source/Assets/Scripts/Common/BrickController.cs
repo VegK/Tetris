@@ -16,7 +16,26 @@ public class BrickController : MonoBehaviour
 
 	#region Methods
 	#region Public
+	public void DetachBoxes()
+	{
+		var childs = GetBoxes();
+		foreach (GameObject obj in childs)
+			obj.transform.SetParent(transform.parent);
 
+		transform.DetachChildren();
+		Destroy(gameObject);
+	}
+
+	public GameObject[] GetBoxes()
+	{
+		var count = transform.childCount;
+		var res = new GameObject[count];
+
+		for (int i = 0; i < count; i++)
+			res[i] = transform.GetChild(i).gameObject;
+
+		return res;
+	}
 	#endregion
 	#region Private
 	private void Start()

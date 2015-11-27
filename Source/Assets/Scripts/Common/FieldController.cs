@@ -33,7 +33,7 @@ public class FieldController : MonoBehaviour
 	#endregion
 	#region Private
 	private int _level;
-	private bool[,] _field;
+	private GameObject[,] _field;
 	private BrickType _nextBrick;
 	private BrickController _currentBrick;
 	#endregion
@@ -58,7 +58,7 @@ public class FieldController : MonoBehaviour
 		boxCenter.y = -1f;
 		box.center = boxCenter;
 
-		_field = new bool[(int)Size.x, (int)Size.y];
+		_field = new GameObject[(int)Size.x, (int)Size.y];
 
 		if (Level == 0)
 			Level = 1;
@@ -81,7 +81,7 @@ public class FieldController : MonoBehaviour
 	{
 		for (int x = 0; x < _field.GetLength(0); x++)
 			for (int y = 0; y < _field.GetLength(1); y++)
-				_field[x, y] = false;
+				_field[x, y] = null;
 
 		var count = transform.childCount;
 		for (int i = 0; i < count; i++)
@@ -123,14 +123,34 @@ public class FieldController : MonoBehaviour
 		brick.transform.position = StartPointBricks.position;
 		brick.SpeedFall = Level * SpeedOnOneLevel;
 		_currentBrick = brick;
-    }
+	}
+
+	private void FixBrick(BrickController brick)
+	{
+		brick.SpeedFall = 0;
+
+		var boxes = brick.GetBoxes();
+		brick.DetachBoxes();
+
+		foreach (GameObject box in boxes)
+		{
+			var pos = box.transform.localPosition;
+			pos.x = (int)pos.x;
+			pos.y = (int)pos.y;
+			box.transform.localPosition = pos;
+
+			var x = (int)pos.x;
+			var y = (int)pos.y;
+
+			_field[x, y] = box;
+		}
+	}
 
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.tag == "Brick")
 		{
-			_currentBrick.SpeedFall = 0;
-
+			FixBrick(_currentBrick);
 		}
 	}
 
