@@ -135,12 +135,13 @@ public class FieldController : MonoBehaviour
 		foreach (GameObject box in boxes)
 		{
 			var pos = box.transform.localPosition;
-			pos.x = (int)pos.x;
-			pos.y = (int)pos.y;
-			box.transform.localPosition = pos;
 
-			var x = (int)pos.x;
-			var y = (int)pos.y;
+			var x = Mathf.RoundToInt(pos.x);
+			var y = Mathf.RoundToInt(pos.y);
+
+			pos.x = x;
+			pos.y = y;
+			box.transform.localPosition = pos;
 
 			_field[x, y] = box;
 		}
