@@ -10,7 +10,7 @@ public class BrickController : MonoBehaviour
 	public float SpeedFall { get; set; }
 	#endregion
 	#region Private
-
+	private float _speedUpFall = 1;
 	#endregion
 	#endregion
 
@@ -42,6 +42,25 @@ public class BrickController : MonoBehaviour
 
 		return res;
 	}
+
+	public void MoveLeft()
+	{
+		var pos = transform.localPosition;
+		pos.x -= 1;
+		transform.localPosition = pos;
+	}
+
+	public void MoveRight()
+	{
+		var pos = transform.localPosition;
+		pos.x += 1;
+		transform.localPosition = pos;
+	}
+
+	public void SpeedUpFall()
+	{
+		_speedUpFall = 3;
+	}
 	#endregion
 	#region Private
 	private void Start()
@@ -57,8 +76,9 @@ public class BrickController : MonoBehaviour
 	private void Fall()
 	{
 		var speed = Vector3.down;
-		speed.y *= SpeedFall * Time.deltaTime;
+		speed.y *= SpeedFall * _speedUpFall * Time.deltaTime;
 		transform.Translate(speed);
+		_speedUpFall = 1;
 	}
 	#endregion
 	#endregion

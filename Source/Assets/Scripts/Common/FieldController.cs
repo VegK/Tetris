@@ -20,6 +20,7 @@ public class FieldController : MonoBehaviour
 	public BrickController PrefabBrickZ;
 
 	public static FieldController Instance;
+	public BrickController CurrentBrick { get; private set; }
 	public int Level
 	{
 		get
@@ -36,7 +37,6 @@ public class FieldController : MonoBehaviour
 	private int _level;
 	private GameObject[,] _field;
 	private BrickType _nextBrick;
-	private BrickController _currentBrick;
 	#endregion
 	#endregion
 
@@ -155,14 +155,14 @@ public class FieldController : MonoBehaviour
 		brick.transform.SetParent(transform);
 		brick.transform.position = StartPointBricks.position;
 		brick.SpeedFall = Level * SpeedOnOneLevel;
-		_currentBrick = brick;
+		CurrentBrick = brick;
 	}
 
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.tag == "Brick")
 		{
-			FixBrick(_currentBrick);
+			FixBrick(CurrentBrick);
 		}
 	}
 
