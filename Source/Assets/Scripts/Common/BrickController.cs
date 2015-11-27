@@ -20,7 +20,13 @@ public class BrickController : MonoBehaviour
 	{
 		var childs = GetBoxes();
 		foreach (GameObject obj in childs)
+		{
 			obj.transform.SetParent(transform.parent);
+
+			var collider = obj.GetComponent<BoxCollider>();
+			if (collider != null)
+				collider.enabled = true;
+		}
 
 		transform.DetachChildren();
 		Destroy(gameObject);

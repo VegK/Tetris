@@ -19,6 +19,7 @@ public class FieldController : MonoBehaviour
 	public BrickController PrefabBrickT;
 	public BrickController PrefabBrickZ;
 
+	public static FieldController Instance;
 	public int Level
 	{
 		get
@@ -41,11 +42,38 @@ public class FieldController : MonoBehaviour
 
 	#region Methods
 	#region Public
+	public void FixBrick(BrickController brick)
+	{
+		if (brick.SpeedFall == 0)
+			return;
 
+		brick.SpeedFall = 0;
+
+		var boxes = brick.GetBoxes();
+		brick.DetachBoxes();
+
+		foreach (GameObject box in boxes)
+		{
+			var pos = box.transform.localPosition;
+
+			var x = Mathf.RoundToInt(pos.x);
+			var y = Mathf.RoundToInt(pos.y);
+
+			pos.x = x;
+			pos.y = y;
+			box.transform.localPosition = pos;
+
+			_field[x, y] = box;
+		}
+
+		NewBrick();
+	}
 	#endregion
 	#region Private
 	private void Awake()
 	{
+		Instance = this;
+
 		var box = gameObject.AddComponent<BoxCollider>();
 		box.isTrigger = true;
 
@@ -66,15 +94,20 @@ public class FieldController : MonoBehaviour
 
 	private void Start()
 	{
-		_nextBrick = GetNextBrick();
-		CreateBrick();
-
-		_nextBrick = GetNextBrick();
+		NewBrick();
 	}
 	
 	private void Update()
 	{
 
+	}
+
+	private void NewBrick()
+	{
+		_nextBrick = GetNextBrick();
+		CreateBrick();
+
+		_nextBrick = GetNextBrick();
 	}
 
 	private void ClearField()
@@ -123,28 +156,6 @@ public class FieldController : MonoBehaviour
 		brick.transform.position = StartPointBricks.position;
 		brick.SpeedFall = Level * SpeedOnOneLevel;
 		_currentBrick = brick;
-	}
-
-	private void FixBrick(BrickController brick)
-	{
-		brick.SpeedFall = 0;
-
-		var boxes = brick.GetBoxes();
-		brick.DetachBoxes();
-
-		foreach (GameObject box in boxes)
-		{
-			var pos = box.transform.localPosition;
-
-			var x = Mathf.RoundToInt(pos.x);
-			var y = Mathf.RoundToInt(pos.y);
-
-			pos.x = x;
-			pos.y = y;
-			box.transform.localPosition = pos;
-
-			_field[x, y] = box;
-		}
 	}
 
 	private void OnTriggerEnter(Collider other)
