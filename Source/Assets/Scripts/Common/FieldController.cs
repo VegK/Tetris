@@ -166,6 +166,13 @@ public class FieldController : MonoBehaviour
 				pos.x += x;
 				pos.y += y;
 				Gizmos.DrawWireCube(pos, Vector2.one);
+
+				if (_field != null && _field[x, y] != null)
+				{
+					Gizmos.color = Color.green;
+					Gizmos.DrawCube(pos, Vector2.one);
+					Gizmos.color = Color.red;
+				}
 			}
 		}
 	}
