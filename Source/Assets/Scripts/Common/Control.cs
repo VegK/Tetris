@@ -14,6 +14,8 @@ public class Control : MonoBehaviour
 	private float _timePressKeyLeft;
 	private float _timePressKeyRight;
 	private float _timePressKeyRotate;
+
+	private bool _lockControl;
 	#endregion
 	#endregion
 
@@ -24,7 +26,15 @@ public class Control : MonoBehaviour
 	#region Private
 	private void Start()
 	{
+		FieldController.Instance.FixedBrickBeforeEvent += (s, e) =>
+		{
+			_lockControl = true;
+		};
 
+		FieldController.Instance.FixedBrickAfterEvent += (s, e) =>
+		{
+			_lockControl = false;
+		};
 	}
 
 	private void Update()
@@ -34,6 +44,9 @@ public class Control : MonoBehaviour
 
 	private void ControlKeybord()
 	{
+		if (_lockControl)
+			return;
+
 		if (Input.GetKey(KeyCode.LeftArrow))
 		{
 			if (Time.time - _timePressKeyLeft >= 0.2f * HorizontalDelta)

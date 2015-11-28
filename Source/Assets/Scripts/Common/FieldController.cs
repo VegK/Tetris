@@ -20,6 +20,8 @@ public class FieldController : MonoBehaviour
 	public BrickController PrefabBrickZ;
 
 	public static FieldController Instance;
+	public event EventHandler FixedBrickBeforeEvent;
+	public event EventHandler FixedBrickAfterEvent;
 	public BrickController CurrentBrick { get; private set; }
 	public int Level
 	{
@@ -44,35 +46,7 @@ public class FieldController : MonoBehaviour
 	#region Public
 	public void FixBrick(BrickController brick)
 	{
-		if (brick.SpeedFall == 0)
-			return;
-
-		brick.SpeedFall = 0;
-
-		var boxes = brick.GetBoxes();
-		brick.DetachBoxes();
-
-		foreach (GameObject box in boxes)
-		{
-			var pos = box.transform.localPosition;
-
-			var x = Mathf.RoundToInt(pos.x);
-			var y = Mathf.RoundToInt(pos.y);
-
-			if (x < 0 || x >= Size.x || y < 0 || y >= Size.y)
-			{
-				Destroy(box);
-				continue;
-			}
-
-			pos.x = x;
-			pos.y = y;
-			box.transform.localPosition = pos;
-
-			_field[x, y] = box;
-		}
-
-		NewBrick();
+		StartCoroutine(FixBrickDelay(brick));
 	}
 
 	public bool CheckCellField(int x, int y)
@@ -169,6 +143,104 @@ public class FieldController : MonoBehaviour
 		brick.transform.position = StartPointBricks.position;
 		brick.SpeedFall = Level * SpeedOnOneLevel;
 		CurrentBrick = brick;
+	}
+
+	private IEnumerator FixBrickDelay(BrickController brick)
+	{
+		if (brick.SpeedFall == 0)
+			yield break;
+
+		if (FixedBrickBeforeEvent != null)
+			FixedBrickBeforeEvent(this, null);
+
+		brick.SpeedFall = 0;
+
+		var boxes = brick.GetBoxes();
+		brick.DetachBoxes();
+
+		foreach (GameObject box in boxes)
+		{
+			var pos = box.transform.localPosition;
+
+			var x = Mathf.RoundToInt(pos.x);
+			var y = Mathf.RoundToInt(pos.y);
+
+			if (x < 0 || x >= Size.x || y < 0 || y >= Size.y)
+			{
+				Destroy(box);
+				continue;
+			}
+
+			pos.x = x;
+			pos.y = y;
+			box.transform.localPosition = pos;
+
+			_field[x, y] = box;
+		}
+
+		yield return StartCoroutine(DestroyLines());
+		NewBrick();
+
+		if (FixedBrickAfterEvent != null)
+			FixedBrickAfterEvent(this, null);
+	}
+
+	private IEnumerator DestroyLines()
+	{
+		var countX = _field.GetLength(0);
+		var countY = _field.GetLength(1);
+
+		for (int y = 0; y < countY; y++)
+		{
+			var fullCells = 0;
+			for (int x = 0; x < countX; x++)
+				if (_field[x, y] != null)
+					fullCells++;
+
+			if (fullCells == countX)
+			{
+				for (int x = 0; x < countX; x++)
+				{
+					Destroy(_field[x, y]);
+					_field[x, y] = null;
+				}
+			}
+		}
+
+		var fullPrefCells = 0;
+		for (int y = 0; y < countY; y++)
+		{
+			if (fullPrefCells == countX)
+			{
+				var boxesDown = new List<GameObject>();
+				for (int y2 = y; y2 < countY; y2++)
+					for (int x2 = 0; x2 < countX; x2++)
+					{
+						if (_field[x2, y2] == null)
+							continue;
+
+						boxesDown.Add(_field[x2, y2]);
+						_field[x2, y2 - 1] = _field[x2, y2];
+						_field[x2, y2] = null;
+					}
+
+				// TODO: add animation drop
+				foreach (GameObject box in boxesDown)
+				{
+					var pos = box.transform.localPosition;
+					pos.y -= 1;
+					box.transform.localPosition = pos;
+				}
+
+				if (boxesDown.Count > 0)
+					yield return new WaitForSeconds(0.3f);
+			}
+
+			fullPrefCells = 0;
+			for (int x = 0; x < countX; x++)
+				if (_field[x, y] == null)
+					fullPrefCells++;
+		}
 	}
 
 	private void OnTriggerEnter(Collider other)
