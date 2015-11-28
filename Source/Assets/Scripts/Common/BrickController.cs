@@ -61,11 +61,12 @@ public class BrickController : MonoBehaviour
 		var pos = transform.localPosition;
 		pos.x -= 1;
 
+		var parentPos = transform.parent.position;
 		var boxes = GetBoxes();
 		foreach (GameObject box in boxes)
 		{
-			var x = Mathf.RoundToInt(box.transform.localPosition.x + pos.x);
-			var y = Mathf.RoundToInt(box.transform.localPosition.y + pos.y);
+			var x = Mathf.RoundToInt(box.transform.position.x + parentPos.x) - 1;
+			var y = Mathf.RoundToInt(box.transform.position.y + parentPos.y);
 
 			if (!FieldController.Instance.CheckCellField(x, y))
 				return;
@@ -82,11 +83,12 @@ public class BrickController : MonoBehaviour
 		var pos = transform.localPosition;
 		pos.x += 1;
 
+		var parentPos = transform.parent.position;
 		var boxes = GetBoxes();
 		foreach (GameObject box in boxes)
 		{
-			var x = Mathf.RoundToInt(box.transform.localPosition.x + pos.x);
-			var y = Mathf.RoundToInt(box.transform.localPosition.y + pos.y);
+			var x = Mathf.RoundToInt(box.transform.position.x + parentPos.x) + 1;
+			var y = Mathf.RoundToInt(box.transform.position.y + parentPos.y);
 
 			if (!FieldController.Instance.CheckCellField(x, y))
 				return;
