@@ -78,7 +78,7 @@ public class BrickController : MonoBehaviour
 		_speedUpFall = 3;
 	}
 
-	public void Rotate()
+	public virtual void Rotate()
 	{
 		var ang = transform.rotation.eulerAngles;
 		ang.z += 90;
@@ -92,7 +92,7 @@ public class BrickController : MonoBehaviour
 		if (trend != 0)
 		{
 			var pos = transform.localPosition;
-			var angZ = (int)transform.rotation.eulerAngles.z;
+			var angZ = Mathf.RoundToInt(transform.rotation.eulerAngles.z);
 			if (angZ == 0)
 				pos.x += trend;
 			else if (angZ == 90)
@@ -106,17 +106,17 @@ public class BrickController : MonoBehaviour
 	}
 	#endregion
 	#region Private
-	private void Awake()
+	protected virtual void Awake()
 	{
 		CalcLastBoxes();
 	}
 
-	private void Start()
+	protected virtual void Start()
 	{
 
 	}
 
-	private void Update()
+	protected virtual void Update()
 	{
 		Fall();
 	}
@@ -157,7 +157,7 @@ public class BrickController : MonoBehaviour
 	/// </summary>
 	/// <param name="diff">Difference</param>
 	/// <returns>0 not output, -1 output of left, 1 output of right</returns>
-	private int ExitBeyondField(int diff)
+	protected int ExitBeyondField(int diff)
 	{
 		if (_lastRightBox.transform.position.x + diff >= FieldController.Instance.Size.x)
 			return 1;
@@ -166,7 +166,7 @@ public class BrickController : MonoBehaviour
 		return 0;
 	}
 
-	private void CalcLastBoxes()
+	protected void CalcLastBoxes()
 	{
 		var boxes = GetBoxes();
 		var angZ = (int)transform.rotation.eulerAngles.z;
