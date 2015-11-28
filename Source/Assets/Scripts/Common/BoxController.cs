@@ -23,9 +23,12 @@ public class BoxController : MonoBehaviour
 	{
 		if (other.tag == "Brick")
 		{
-			var ctrl = other.GetComponent<BrickController>();
-			if (ctrl != null)
-				FieldController.Instance.FixBrick(ctrl);
+			if (other.transform.position.y > transform.position.y)
+			{
+				var ctrl = other.GetComponent<BrickController>();
+				if (ctrl != null)
+					FieldController.Instance.FixBrick(ctrl);
+			}
 		}
 	}
 	#endregion
