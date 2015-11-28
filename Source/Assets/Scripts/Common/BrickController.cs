@@ -83,6 +83,9 @@ public class BrickController : MonoBehaviour
 		var ang = transform.rotation.eulerAngles;
 		ang.z += 90;
 
+		if (!AvailableRotateInField(ang))
+			return;
+
 		var rot = transform.rotation;
 		rot.eulerAngles = ang;
 		transform.rotation = rot;
@@ -191,6 +194,31 @@ public class BrickController : MonoBehaviour
 			_lastLeftBox = boxes.Aggregate((a, b) => a.transform.localPosition.y < b.transform.localPosition.y ? a : b);
 			_lastRightBox = boxes.Aggregate((a, b) => a.transform.localPosition.y > b.transform.localPosition.y ? a : b);
 		}
+	}
+
+	protected bool AvailableRotateInField(Vector3 angles)
+	{
+		var boxes = GetBoxes();
+
+		var count = boxes.Count();
+		for (int i = 0; i < count; i++)
+		{
+			var box = boxes[i];
+			var pos = box.transform.localPosition;
+
+			if (pos.x == 0 && pos.y == 0)
+				continue;
+
+			var rotPos = Quaternion.Euler(angles) * pos;
+			var posBrick = transform.position;
+			var x = Mathf.RoundToInt(rotPos.x + posBrick.x);
+			var y = Mathf.RoundToInt(rotPos.y + posBrick.y);
+
+			if (!FieldController.Instance.CheckCellField(x, y))
+				return false;
+		}
+
+		return true;
 	}
 	#endregion
 	#endregion

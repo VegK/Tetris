@@ -18,6 +18,9 @@ public class BrickZController : BrickController
 		var ang = transform.rotation.eulerAngles;
 		ang.z = (Mathf.RoundToInt(ang.z) == 0) ? 90 : 0;
 
+		if (!AvailableRotateInField(ang))
+			return;
+
 		var rot = transform.rotation;
 		rot.eulerAngles = ang;
 		transform.rotation = rot;

@@ -74,6 +74,13 @@ public class FieldController : MonoBehaviour
 
 		NewBrick();
 	}
+
+	public bool CheckCellField(int x, int y)
+	{
+		if (x < 0 || x >= Size.x || y < 0 || y >= Size.y)
+			return false;
+		return _field[x, y] == null;
+	}
 	#endregion
 	#region Private
 	private void Awake()
