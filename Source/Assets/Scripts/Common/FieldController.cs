@@ -59,6 +59,12 @@ public class FieldController : MonoBehaviour
 			var x = Mathf.RoundToInt(pos.x);
 			var y = Mathf.RoundToInt(pos.y);
 
+			if (x < 0 || x >= Size.x || y < 0 || y >= Size.y)
+			{
+				Destroy(box);
+				continue;
+			}
+
 			pos.x = x;
 			pos.y = y;
 			box.transform.localPosition = pos;
