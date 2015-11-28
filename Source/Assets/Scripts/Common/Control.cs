@@ -8,9 +8,12 @@ public class Control : MonoBehaviour
 	#region Properties
 	#region Public
 	public float HorizontalDelta = 1f;
+	public float RotateDelta = 1f;
 	#endregion
 	#region Private
-	private float _timePressKey;
+	private float _timePressKeyLeft;
+	private float _timePressKeyRight;
+	private float _timePressKeyRotate;
 	#endregion
 	#endregion
 
@@ -33,23 +36,32 @@ public class Control : MonoBehaviour
 	{
 		if (Input.GetKey(KeyCode.LeftArrow))
 		{
-			if (Time.time - _timePressKey >= 0.2f * HorizontalDelta)
+			if (Time.time - _timePressKeyLeft >= 0.2f * HorizontalDelta)
 			{
 				FieldController.Instance.CurrentBrick.MoveLeft();
-				_timePressKey = Time.time;
+				_timePressKeyLeft = Time.time;
 			}
 		}
 		else if (Input.GetKey(KeyCode.RightArrow))
 		{
-			if (Time.time - _timePressKey >= 0.2f * HorizontalDelta)
+			if (Time.time - _timePressKeyRight >= 0.2f * HorizontalDelta)
 			{
 				FieldController.Instance.CurrentBrick.MoveRight();
-				_timePressKey = Time.time;
+				_timePressKeyRight = Time.time;
 			}
 		}
-		else if (Input.GetKey(KeyCode.DownArrow))
+
+		if (Input.GetKey(KeyCode.DownArrow))
 		{
 			FieldController.Instance.CurrentBrick.SpeedUpFall();
+		}
+		else if (Input.GetKey(KeyCode.UpArrow))
+		{
+			if (Time.time - _timePressKeyRotate >= 0.2f * RotateDelta)
+			{
+				FieldController.Instance.CurrentBrick.Rotate();
+				_timePressKeyRotate = Time.time;
+			}
 		}
 	}
 	#endregion

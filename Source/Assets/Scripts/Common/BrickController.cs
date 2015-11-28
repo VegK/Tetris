@@ -44,14 +44,18 @@ public class BrickController : MonoBehaviour
 
 		_bufferBoxes = new GameObject[count];
 		for (int i = 0; i < count; i++)
-			_bufferBoxes[i] = transform.GetChild(i).gameObject;
+		{
+			var child = transform.GetChild(i);
+			if (child.tag == "Box")
+				_bufferBoxes[i] = child.gameObject;
+		}
 
 		return _bufferBoxes;
 	}
 
 	public void MoveLeft()
 	{
-		if (ExitBeyondField(-1))
+		if (ExitBeyondField(-1) != 0)
 			return;
 
 		var pos = transform.localPosition;
@@ -61,7 +65,7 @@ public class BrickController : MonoBehaviour
 
 	public void MoveRight()
 	{
-		if (ExitBeyondField(1))
+		if (ExitBeyondField(1) != 0)
 			return;
 
 		var pos = transform.localPosition;
@@ -73,13 +77,38 @@ public class BrickController : MonoBehaviour
 	{
 		_speedUpFall = 3;
 	}
+
+	public void Rotate()
+	{
+		var ang = transform.rotation.eulerAngles;
+		ang.z += 90;
+
+		var rot = transform.rotation;
+		rot.eulerAngles = ang;
+		transform.rotation = rot;
+
+		CalcLastBoxes();
+		var trend = ExitBeyondField(0);
+		if (trend != 0)
+		{
+			var pos = transform.localPosition;
+			var angZ = (int)transform.rotation.eulerAngles.z;
+			if (angZ == 0)
+				pos.x += trend;
+			else if (angZ == 90)
+				pos.y += trend;
+			else if (angZ == 180)
+				pos.x -= trend;
+			else if (angZ == 270)
+				pos.y -= trend;
+			transform.localPosition = pos;
+		}
+	}
 	#endregion
 	#region Private
 	private void Awake()
 	{
-		var boxes = GetBoxes();
-		_lastLeftBox = boxes.Aggregate((a, b) => a.transform.localPosition.x < b.transform.localPosition.x ? a : b);
-		_lastRightBox = boxes.Aggregate((a, b) => a.transform.localPosition.x > b.transform.localPosition.x ? a : b);
+		CalcLastBoxes();
 	}
 
 	private void Start()
@@ -94,17 +123,74 @@ public class BrickController : MonoBehaviour
 
 	private void Fall()
 	{
-		var speed = Vector3.down;
-		speed.y *= SpeedFall * _speedUpFall * Time.deltaTime;
-		transform.Translate(speed);
+		var speed = SpeedFall * _speedUpFall * Time.deltaTime;
+
+		var direction = Vector3.zero;
+		var angZ = (int)transform.rotation.eulerAngles.z;
+		if (angZ == 0)
+		{
+			direction = Vector3.down;
+			direction.y *= speed;
+		}
+		else if (angZ == 90)
+		{
+			direction = Vector3.left;
+			direction.x *= speed;
+		}
+		else if (angZ == 180)
+		{
+			direction = Vector3.up;
+			direction.y *= speed;
+		}
+		else if (angZ == 270)
+		{
+			direction = Vector3.right;
+			direction.x *= speed;
+		}
+
+		transform.Translate(direction);
 		_speedUpFall = 1;
 	}
 
-	private bool ExitBeyondField(int diff)
+	/// <summary>
+	/// Check output brick beyond field. Return 0 not output, -1 if output of left, 1 if output of right.
+	/// </summary>
+	/// <param name="diff">Difference</param>
+	/// <returns>0 not output, -1 output of left, 1 output of right</returns>
+	private int ExitBeyondField(int diff)
 	{
-		var res = (_lastRightBox.transform.position.x + diff >= FieldController.Instance.Size.x);
-		res |= (_lastLeftBox.transform.position.x + diff < 0);
-		return res;
+		if (_lastRightBox.transform.position.x + diff >= FieldController.Instance.Size.x)
+			return 1;
+		if (_lastLeftBox.transform.position.x + diff < 0)
+			return -1;
+		return 0;
+	}
+
+	private void CalcLastBoxes()
+	{
+		var boxes = GetBoxes();
+		var angZ = (int)transform.rotation.eulerAngles.z;
+
+		if (angZ == 0)
+		{
+			_lastLeftBox = boxes.Aggregate((a, b) => a.transform.localPosition.x < b.transform.localPosition.x ? a : b);
+			_lastRightBox = boxes.Aggregate((a, b) => a.transform.localPosition.x > b.transform.localPosition.x ? a : b);
+		}
+		else if (angZ == 90)
+		{
+			_lastLeftBox = boxes.Aggregate((a, b) => a.transform.localPosition.y > b.transform.localPosition.y ? a : b);
+			_lastRightBox = boxes.Aggregate((a, b) => a.transform.localPosition.y < b.transform.localPosition.y ? a : b);
+		}
+		else if (angZ == 180)
+		{
+			_lastLeftBox = boxes.Aggregate((a, b) => a.transform.localPosition.x > b.transform.localPosition.x ? a : b);
+			_lastRightBox = boxes.Aggregate((a, b) => a.transform.localPosition.x < b.transform.localPosition.x ? a : b);
+		}
+		else if (angZ == 270)
+		{
+			_lastLeftBox = boxes.Aggregate((a, b) => a.transform.localPosition.y < b.transform.localPosition.y ? a : b);
+			_lastRightBox = boxes.Aggregate((a, b) => a.transform.localPosition.y > b.transform.localPosition.y ? a : b);
+		}
 	}
 	#endregion
 	#endregion
