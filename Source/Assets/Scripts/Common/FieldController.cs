@@ -44,6 +44,16 @@ public class FieldController : MonoBehaviour
 
 	#region Methods
 	#region Public
+	public void Enable()
+	{
+		gameObject.SetActive(true);
+	}
+
+	public void Disable()
+	{
+		gameObject.SetActive(false);
+	}
+
 	public void FixBrick(BrickController brick)
 	{
 		StartCoroutine(FixBrickDelay(brick));
@@ -81,6 +91,9 @@ public class FieldController : MonoBehaviour
 
 	private void Start()
 	{
+		GameGUI.Instance.Level = Level;
+
+		_nextBrick = GetNextBrick();
 		NewBrick();
 	}
 	
@@ -91,10 +104,10 @@ public class FieldController : MonoBehaviour
 
 	private void NewBrick()
 	{
-		_nextBrick = GetNextBrick();
 		CreateBrick();
 
 		_nextBrick = GetNextBrick();
+		GameGUI.Instance.SetNextBrick(_nextBrick);
 	}
 
 	private void ClearField()
@@ -178,6 +191,9 @@ public class FieldController : MonoBehaviour
 			_field[x, y] = box;
 		}
 
+		if (GameOver())
+			yield break;
+
 		yield return StartCoroutine(DestroyLines());
 		NewBrick();
 
@@ -204,6 +220,7 @@ public class FieldController : MonoBehaviour
 					Destroy(_field[x, y]);
 					_field[x, y] = null;
 				}
+				DestroyLine();
 			}
 		}
 
@@ -241,6 +258,33 @@ public class FieldController : MonoBehaviour
 				if (_field[x, y] == null)
 					fullPrefCells++;
 		}
+	}
+
+	private void DestroyLine()
+	{
+		GameGUI.Instance.Lines++;
+		GameGUI.Instance.Score += 5;
+	}
+
+	private bool GameOver()
+	{
+		var res = false;
+		var countX = Mathf.RoundToInt(Size.x);
+		var countY = Mathf.RoundToInt(Size.y);
+
+		for (int x = 0; x < countX; x++)
+			if (_field[x, countY - 1] != null)
+			{
+				res = true;
+				break;
+			}
+
+		if (res)
+		{
+
+		}
+
+		return res;
 	}
 
 	private void OnTriggerEnter(Collider other)
