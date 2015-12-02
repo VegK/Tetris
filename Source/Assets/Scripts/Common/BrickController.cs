@@ -186,10 +186,14 @@ public class BrickController : MonoBehaviour
 	/// <returns>0 not output, -1 output of left, 1 output of right</returns>
 	protected int ExitBeyondField(int diff)
 	{
-		if (_lastRightBox.transform.position.x + diff >= FieldController.Instance.Size.x)
+		var posX = Mathf.RoundToInt(_lastRightBox.transform.position.x);
+
+		if (posX + diff >= FieldController.Instance.Size.x)
 			return 1;
-		if (_lastLeftBox.transform.position.x + diff < 0)
+
+		if (posX + diff < 0)
 			return -1;
+
 		return 0;
 	}
 
