@@ -250,7 +250,10 @@ public class FieldController : MonoBehaviour
 				}
 
 				if (boxesDown.Count > 0)
+				{
+					y--;
 					yield return new WaitForSeconds(0.3f);
+				}
 			}
 
 			fullPrefCells = 0;
