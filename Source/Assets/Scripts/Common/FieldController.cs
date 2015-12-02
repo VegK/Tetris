@@ -61,8 +61,10 @@ public class FieldController : MonoBehaviour
 
 	public bool CheckCellField(int x, int y)
 	{
-		if (x < 0 || x >= Size.x || y < 0 || y >= Size.y)
+		if (x < 0 || x >= Size.x || y < 0)
 			return false;
+		if (y >= Size.y)
+			return true;
 		return _field[x, y] == null;
 	}
 	#endregion
@@ -178,11 +180,13 @@ public class FieldController : MonoBehaviour
 			var x = Mathf.RoundToInt(pos.x);
 			var y = Mathf.RoundToInt(pos.y);
 
-			if (x < 0 || x >= Size.x || y < 0 || y >= Size.y)
+			if (x < 0 || x >= Size.x || y < 0)
 			{
 				Destroy(box);
 				continue;
 			}
+			else if (y >= Size.y)
+				continue;
 
 			pos.x = x;
 			pos.y = y;
@@ -191,10 +195,11 @@ public class FieldController : MonoBehaviour
 			_field[x, y] = box;
 		}
 
+		yield return StartCoroutine(DestroyLines());
+
 		if (GameOver())
 			yield break;
 
-		yield return StartCoroutine(DestroyLines());
 		NewBrick();
 
 		if (FixedBrickAfterEvent != null)
@@ -284,7 +289,7 @@ public class FieldController : MonoBehaviour
 
 		if (res)
 		{
-
+			Debug.Log("Game over");
 		}
 
 		return res;
