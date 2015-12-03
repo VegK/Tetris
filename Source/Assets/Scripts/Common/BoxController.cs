@@ -23,7 +23,9 @@ public class BoxController : MonoBehaviour
 	{
 		if (other.tag == "Brick")
 		{
-			if (other.transform.position.y > transform.position.y)
+			var box = other as BoxCollider;
+			var posY = Mathf.RoundToInt(other.transform.position.y + box.center.y);
+			if (posY > transform.position.y)
 			{
 				var ctrl = other.GetComponent<BrickController>();
 				if (ctrl != null)
