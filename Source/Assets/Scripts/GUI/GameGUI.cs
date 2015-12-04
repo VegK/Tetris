@@ -157,22 +157,23 @@ public class GameGUI : MonoBehaviour
 			Destroy(UINextBrickPanel.transform.GetChild(i).gameObject);
 
 		var obj = Instantiate(brick);
+		obj.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
 		var offsetX = 0.0f;
 		var offsetY = 0.0f;
 		switch (obj.TypeBrick)
 		{
 			case BrickType.I:
-				offsetX = -0.5f;
+				offsetX = -0.33f;
 				break;
 			case BrickType.J:
 				offsetY = -0.5f;
 				break;
 			case BrickType.L:
-				offsetY = 0.5f;
+				offsetY = 0.33f;
 				break;
 			case BrickType.O:
-				offsetX = 0.5f;
-				offsetY = -0.5f;
+				offsetX = 0.33f;
+				offsetY = -0.33f;
 				break;
 			case BrickType.S:
 				offsetY = -0.5f;
