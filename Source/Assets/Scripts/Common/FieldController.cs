@@ -93,15 +93,27 @@ public class FieldController : MonoBehaviour
 
 	private void Start()
 	{
-		GameGUI.Instance.Level = Level;
-
-		_nextBrick = GetNextBrick();
-		NewBrick();
+		GameGUI.Instance.RestartEvent += new EventHandler((o, e) => NewGame());
+		NewGame();
 	}
 	
 	private void Update()
 	{
 
+	}
+
+	private void NewGame(int level = 1)
+	{
+		ClearField();
+		Level = level;
+
+		GameGUI.Instance.Level = Level;
+		GameGUI.Instance.Lines = 0;
+		GameGUI.Instance.Score = 0;
+		GameGUI.Instance.ShowGameGUI();
+
+		_nextBrick = GetNextBrick();
+		NewBrick();
 	}
 
 	private void NewBrick()
@@ -197,10 +209,8 @@ public class FieldController : MonoBehaviour
 
 		yield return StartCoroutine(DestroyLines());
 
-		if (GameOver())
-			yield break;
-
-		NewBrick();
+		if (!GameOver())
+			NewBrick();
 
 		if (FixedBrickAfterEvent != null)
 			FixedBrickAfterEvent(this, null);
@@ -288,9 +298,7 @@ public class FieldController : MonoBehaviour
 			}
 
 		if (res)
-		{
-			Debug.Log("Game over");
-		}
+			GameGUI.Instance.ShowGameOverGUI();
 
 		return res;
 	}

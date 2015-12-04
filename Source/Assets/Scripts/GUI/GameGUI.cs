@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,10 +6,14 @@ public class GameGUI : MonoBehaviour
 {
 	#region Properties
 	#region Public
+	[Header("Game interface")]
+	public GameObject UIParentGame;
 	public Text UILevelValue;
 	public Text UIScoreValue;
 	public Text UILinesValue;
 	public GameObject UINextBrickPanel;
+	[Header("Game over")]
+	public GameObject UIParentGameOver;
 	[Header("Bricks")]
 	public BrickController PrefabBrickI;
 	public BrickController PrefabBrickJ;
@@ -20,6 +24,7 @@ public class GameGUI : MonoBehaviour
 	public BrickController PrefabBrickZ;
 
 	public static GameGUI Instance;
+	public event EventHandler RestartEvent;
 	public int Level
 	{
 		set
@@ -66,6 +71,24 @@ public class GameGUI : MonoBehaviour
 
 	#region Methods
 	#region Public
+	public void OnClickRestartGame()
+	{
+		if (RestartEvent != null)
+			RestartEvent(this, EventArgs.Empty);
+	}
+
+	public void ShowGameGUI()
+	{
+		UIParentGame.SetActive(true);
+		UIParentGameOver.SetActive(false);
+	}
+
+	public void ShowGameOverGUI()
+	{
+		UIParentGame.SetActive(false);
+		UIParentGameOver.SetActive(true);
+	}
+
 	public void SetNextBrick(BrickType type)
 	{
 		BrickController brick;
