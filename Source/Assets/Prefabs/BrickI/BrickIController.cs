@@ -18,6 +18,9 @@ public class BrickIController : BrickController
 	#region Public
 	public override void Rotate()
 	{
+		if (FieldController.Instance.Pause)
+			return;
+
 		var ang = transform.rotation.eulerAngles;
 		ang.z = (Mathf.RoundToInt(ang.z) == 0) ? 90 : 0;
 

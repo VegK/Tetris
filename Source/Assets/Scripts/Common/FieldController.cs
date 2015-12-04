@@ -22,21 +22,36 @@ public class FieldController : MonoBehaviour
 	public static FieldController Instance;
 	public event EventHandler FixedBrickBeforeEvent;
 	public event EventHandler FixedBrickAfterEvent;
+	public event PauseHandler PauseEvent;
+	public bool Pause
+	{
+		get
+		{
+			return _bufferPause;
+		}
+		set
+		{
+			_bufferPause = value;
+			if (PauseEvent != null)
+				PauseEvent(_bufferPause);
+		}
+	}
 	public BrickController CurrentBrick { get; private set; }
 	public int Level
 	{
 		get
 		{
-			return _level;
+			return _bufferLevel;
 		}
 		set
 		{
-			_level = value;
+			_bufferLevel = value;
 		}
 	}
 	#endregion
 	#region Private
-	private int _level;
+	private bool _bufferPause;
+	private int _bufferLevel;
 	private GameObject[,] _field;
 	private BrickType _nextBrick;
 	#endregion
@@ -52,6 +67,7 @@ public class FieldController : MonoBehaviour
 	public void Disable()
 	{
 		gameObject.SetActive(false);
+		Pause = true;
 	}
 
 	public void FixBrick(BrickController brick)
@@ -93,7 +109,7 @@ public class FieldController : MonoBehaviour
 
 	private void Start()
 	{
-		GameGUI.Instance.RestartEvent += new EventHandler((o, e) => NewGame());
+		GameGUI.Instance.RestartEvent += (o, e) => NewGame();
 		NewGame();
 	}
 	
@@ -107,13 +123,14 @@ public class FieldController : MonoBehaviour
 		ClearField();
 		Level = level;
 
+		GameGUI.Instance.ShowGameGUI();
 		GameGUI.Instance.Level = Level;
 		GameGUI.Instance.Lines = 0;
 		GameGUI.Instance.Score = 0;
-		GameGUI.Instance.ShowGameGUI();
 
 		_nextBrick = GetNextBrick();
 		NewBrick();
+		Pause = false;
 	}
 
 	private void NewBrick()
@@ -335,4 +352,6 @@ public class FieldController : MonoBehaviour
 	}
 	#endregion
 	#endregion
+
+	public delegate void PauseHandler(bool value);
 }

@@ -6,14 +6,19 @@ public class GameGUI : MonoBehaviour
 {
 	#region Properties
 	#region Public
-	[Header("Game interface")]
+	[Header("Game")]
 	public GameObject UIParentGame;
 	public Text UILevelValue;
 	public Text UIScoreValue;
 	public Text UILinesValue;
 	public GameObject UINextBrickPanel;
+	[Header("Pause")]
+	public GameObject UIParentPause;
 	[Header("Game over")]
 	public GameObject UIParentGameOver;
+	public Text UIFinalLevelValue;
+	public Text UIFinalScoreValue;
+	public Text UIFinalLinesValue;
 	[Header("Bricks")]
 	public BrickController PrefabBrickI;
 	public BrickController PrefabBrickJ;
@@ -71,21 +76,50 @@ public class GameGUI : MonoBehaviour
 
 	#region Methods
 	#region Public
-	public void OnClickRestartGame()
+	public void OnClickPause()
 	{
+		FieldController.Instance.Pause = true;
+		ShowPauseGUI();
+	}
+
+	public void OnClickPlay()
+	{
+		FieldController.Instance.Pause = false;
+		ShowGameGUI();
+	}
+
+	public void OnClickRestart()
+	{
+		ShowGameGUI();
 		if (RestartEvent != null)
 			RestartEvent(this, EventArgs.Empty);
+	}
+
+	public void OnClickMenu()
+	{
+		Application.LoadLevel("MainMenu");
+	}
+
+	public void OnClickShareFacebook()
+	{
+		// TODO: share facebook
 	}
 
 	public void ShowGameGUI()
 	{
 		UIParentGame.SetActive(true);
+		UIParentPause.SetActive(false);
 		UIParentGameOver.SetActive(false);
 	}
 
 	public void ShowGameOverGUI()
 	{
+		UIFinalLevelValue.text = Level.ToString();
+		UIFinalScoreValue.text = Score.ToString();
+		UIFinalLinesValue.text = Lines.ToString();
+
 		UIParentGame.SetActive(false);
+		UIParentPause.SetActive(false);
 		UIParentGameOver.SetActive(true);
 	}
 
@@ -162,6 +196,13 @@ public class GameGUI : MonoBehaviour
 	private void Awake()
 	{
 		Instance = this;
+	}
+
+	private void ShowPauseGUI()
+	{
+		UIParentGame.SetActive(false);
+		UIParentPause.SetActive(true);
+		UIParentGameOver.SetActive(false);
 	}
 	#endregion
 	#endregion

@@ -21,32 +21,25 @@ public class Control : MonoBehaviour
 
 	#region Methods
 	#region Public
-	
+
 	#endregion
 	#region Private
 	private void Start()
 	{
-		FieldController.Instance.FixedBrickBeforeEvent += (s, e) =>
-		{
-			_lockControl = true;
-		};
-
-		FieldController.Instance.FixedBrickAfterEvent += (s, e) =>
-		{
-			_lockControl = false;
-		};
+		FieldController.Instance.FixedBrickBeforeEvent += (s, e) => _lockControl = true;
+		FieldController.Instance.FixedBrickAfterEvent += (s, e) => _lockControl = false;
+		FieldController.Instance.PauseEvent += (v) => _lockControl = v;
 	}
 
 	private void Update()
 	{
+		if (_lockControl)
+			return;
 		ControlKeybord();
 	}
 
 	private void ControlKeybord()
 	{
-		if (_lockControl)
-			return;
-
 		if (Input.GetKey(KeyCode.LeftArrow))
 		{
 			if (Time.time - _timePressKeyLeft >= 0.2f * HorizontalDelta)

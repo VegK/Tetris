@@ -55,6 +55,8 @@ public class BrickController : MonoBehaviour
 
 	public void MoveLeft()
 	{
+		if (FieldController.Instance.Pause)
+			return;
 		if (ExitBeyondField(-1) != 0)
 			return;
 
@@ -77,6 +79,8 @@ public class BrickController : MonoBehaviour
 
 	public void MoveRight()
 	{
+		if (FieldController.Instance.Pause)
+			return;
 		if (ExitBeyondField(1) != 0)
 			return;
 
@@ -104,6 +108,9 @@ public class BrickController : MonoBehaviour
 
 	public virtual void Rotate()
 	{
+		if (FieldController.Instance.Pause)
+			return;
+
 		var ang = transform.rotation.eulerAngles;
 		ang.z += 90;
 
@@ -150,6 +157,9 @@ public class BrickController : MonoBehaviour
 
 	private void Fall()
 	{
+		if (FieldController.Instance.Pause)
+			return;
+
 		var speed = SpeedFall * _speedUpFall * Time.deltaTime;
 
 		var direction = Vector3.zero;
