@@ -67,8 +67,8 @@ public class BrickController : MonoBehaviour
 		var boxes = GetBoxes();
 		foreach (GameObject box in boxes)
 		{
-			var x = Mathf.RoundToInt(box.transform.position.x + parentPos.x) - 1;
-			var y = Mathf.RoundToInt(box.transform.position.y + parentPos.y);
+			var x = Mathf.FloorToInt(box.transform.position.x + parentPos.x) - 1;
+			var y = Mathf.FloorToInt(box.transform.position.y + parentPos.y);
 
 			if (!FieldController.Instance.CheckCellField(x, y))
 				return;
@@ -91,8 +91,8 @@ public class BrickController : MonoBehaviour
 		var boxes = GetBoxes();
 		foreach (GameObject box in boxes)
 		{
-			var x = Mathf.RoundToInt(box.transform.position.x + parentPos.x) + 1;
-			var y = Mathf.RoundToInt(box.transform.position.y + parentPos.y);
+			var x = Mathf.FloorToInt(box.transform.position.x + parentPos.x) + 1;
+			var y = Mathf.FloorToInt(box.transform.position.y + parentPos.y);
 
 			if (!FieldController.Instance.CheckCellField(x, y))
 				return;
