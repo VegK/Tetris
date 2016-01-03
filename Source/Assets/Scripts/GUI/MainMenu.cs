@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
@@ -16,7 +16,7 @@ public class MainMenu : MonoBehaviour
 	#region Public
 	public void OnClickStart()
 	{
-		Application.LoadLevel("Game");
+		SceneManager.LoadScene("Game");
 	}
 	#endregion
 	#region Private

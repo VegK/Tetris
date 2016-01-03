@@ -150,7 +150,7 @@ public class BrickController : MonoBehaviour
 
 	}
 
-	protected virtual void Update()
+	protected virtual void FixedUpdate()
 	{
 		Fall();
 	}

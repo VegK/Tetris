@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameGUI : MonoBehaviour
@@ -97,7 +98,7 @@ public class GameGUI : MonoBehaviour
 
 	public void OnClickMenu()
 	{
-		Application.LoadLevel("MainMenu");
+		SceneManager.LoadScene("MainMenu");
 	}
 
 	public void OnClickShareFacebook()

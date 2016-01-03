@@ -31,7 +31,7 @@ public class Control : MonoBehaviour
 		FieldController.Instance.PauseEvent += (v) => _lockControl = v;
 	}
 
-	private void Update()
+	private void FixedUpdate()
 	{
 		if (_lockControl)
 			return;
