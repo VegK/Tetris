@@ -315,7 +315,10 @@ public class FieldController : MonoBehaviour
 			}
 
 		if (res)
+		{
 			GameGUI.Instance.ShowGameOverGUI();
+			Pause = true;
+		}
 
 		return res;
 	}
